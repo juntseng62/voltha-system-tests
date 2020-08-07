@@ -75,8 +75,8 @@ Verify AAA-Users Authentication
     ${List_ONU_Serial}    Create List
     Set Suite Variable    ${List_ONU_Serial}
     Build ONU SN List    ${List_ONU_Serial}
-    Wait Until Keyword Succeeds    ${long_timeout}    60s   Verify Number of AAA-Users    ${ONOS_SSH_IP}
-    ...    ${ONOS_SSH_PORT}    16
+    Wait Until Keyword Succeeds    ${long_timeout}    60s   Assert Number of AAA-Users    ${onos_ssh_connection}    1
+
 
 Validate Device's Ports and Flows
     [Documentation]    Verify Ports and Flows listed for OLT and ONUs
@@ -99,7 +99,7 @@ Verify Total Number Of Eapol Flows
     [Tags]    VOL-1823    active
     #verify eapol flows added
     Wait Until Keyword Succeeds    ${long_timeout}    5s    Verify Eapol Flows Added    ${ONOS_SSH_IP}
-    ...    ${ONOS_SSH_PORT}    16
+    ...    ${ONOS_SSH_PORT}    1
 
 Allocate DHCP To All ONU Devices
     [Documentation]    DHCP Allocation for all ONUs
@@ -113,7 +113,7 @@ Allocate DHCP To All ONU Devices
         ${onu_port}=    Run Keyword And Continue On Failure    Wait Until Keyword Succeeds    ${timeout}    2s
         ...    Get ONU Port in ONOS    ${src['onu']}    ${of_id}
         Run Keyword And Continue On Failure    Wait Until Keyword Succeeds    ${timeout}    2
-        ...    Execute ONOS CLI Command    ${ONOS_SSH_IP}    ${ONOS_SSH_PORT}
+        ...    Execute ONOS CLI Command on open connection    ${onos_ssh_connection}
         ...    volt-add-subscriber-access ${of_id} ${onu_port}
     END
 
@@ -121,8 +121,8 @@ Validate Total Number Of DHCP Allocations
     [Documentation]    Verify dhcp allocation for multiple ONU user
     [Tags]    VOL-1824    active
     #validate total number of DHCP allocations
-    Wait Until Keyword Succeeds  ${long_timeout}  20s  Validate DHCP Allocations  ${ONOS_SSH_IP}
-    ...    ${ONOS_SSH_PORT}        16
+    Wait Until Keyword Succeeds  ${long_timeout}  20s  Validate DHCP Allocations
+    ...    ${onos_ssh_connection}        1
     #validate DHCP allocation for each port
     FOR    ${I}    IN RANGE    0    ${num_onus}
         ${src}=    Set Variable    ${hosts.src[${I}]}
@@ -181,16 +181,16 @@ Test Disable and Enable ONU
 Setup Suite
     [Documentation]    Set up the test suite
     Common Test Suite Setup
+    ${onos_ssh_connection}    Open ONOS SSH Connection    ${ONOS_SSH_IP}    ${ONOS_SSH_PORT}
+    Set Suite Variable  ${onos_ssh_connection}
 
 Teardown Suite
     [Documentation]    Clean up devices if desired
     ...    kills processes and cleans up interfaces on src+dst servers
-    Get ONOS Status    ${ONOS_SSH_IP}    ${ONOS_SSH_PORT}
     Run Keyword If    ${has_dataplane}    Clean Up Linux
     Run Keyword If    ${teardown_device}    Delete Device and Verify
     Run Keyword If    ${teardown_device}    Test Empty Device List
-    Run Keyword If    ${teardown_device}    Execute ONOS CLI Command    ${ONOS_SSH_IP}    ${ONOS_SSH_PORT}
-    ...    device-remove ${of_id}
+    Run Keyword If    ${teardown_device}    Close ONOS SSH Connection   ${onos_ssh_connection}
 
 Clean Up Linux
     [Documentation]    Kill processes and clean up interfaces on src+dst servers

@@ -454,7 +454,7 @@ Retrieve Peer List From OLT
     ${length}=    Get Length    ${peers}
     FOR    ${INDEX}    IN RANGE    0    ${length}
         ${value}=    Get From List    ${peers}    ${INDEX}
-        ${peer_id}=    Get From Dictionary    ${value}    deviceid
+        ${peer_id}=    Get From Dictionary    ${value}    deviceId
         Append To List    ${olt_peer_list}    ${peer_id}
     END
 
@@ -511,7 +511,7 @@ Match ONU Peer Id
     ${length}=    Get Length    ${peers}
     FOR    ${INDEX}    IN RANGE    0    ${length}
         ${value}=    Get From List    ${peers}    ${INDEX}
-        ${peer_id}=    Get From Dictionary    ${value}    deviceid
+        ${peer_id}=    Get From Dictionary    ${value}    deviceId
     END
     Should Be Equal    '${peer_id}'    '${olt_device_id}'
     ...    Mismatch between ONU peer ${peer_id} and OLT device id ${olt_device_id}    values=False

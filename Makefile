@@ -42,6 +42,7 @@ ROBOT_SANITY_MULT_PON_FILE      ?= $(ROOT_DIR)/tests/data/bbsim-kind-2x2.yaml
 ROBOT_SCALE_SINGLE_PON_FILE     ?= $(ROOT_DIR)/tests/data/bbsim-kind-16.yaml
 ROBOT_SCALE_MULT_PON_FILE       ?= $(ROOT_DIR)/tests/data/bbsim-kind-8x2.yaml
 ROBOT_SCALE_MULT_ONU_FILE       ?= $(ROOT_DIR)/tests/data/bbsim-kind-8x8.yaml
+ROBOT_SCALE_KIND                ?= $(ROOT_DIR)/tests/data/bbsim-scale-kind.yaml
 ROBOT_DEBUG_LOG_OPT             ?=
 ROBOT_MISC_ARGS                 ?=
 # TODO: TT workflow not yet supported on BBSim
@@ -140,6 +141,7 @@ scale-multi-kind: bbsim-scale-kind
 
 bbsim-scale-kind: ROBOT_MISC_ARGS += -X $(ROBOT_DEBUG_LOG_OPT)
 bbsim-scale-kind: ROBOT_FILE := Voltha_ScaleFunctionalTests.robot
+bbsim-scale-kind: ROBOT_CONFIG_FILE := $(ROBOT_SCALE_KIND) 
 bbsim-scale-kind: voltha-test
 
 #Only supported in full mode
